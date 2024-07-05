@@ -1,0 +1,7 @@
+# phpstan.neon.dist
+parameters:
+    level: max
+    paths:
+        - app
+        - routes
+        - tests
