@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Src\WeatherPlayList;
 
+use App\Events\GetPlayListEvent;
+use App\Models\PlayListStatistics;
 use App\Src\Spotify\SpotifyRepository;
 use App\Src\Weather\WeatherRepository;
 
@@ -23,8 +25,19 @@ final class WeatherPlayList
     {
         $celciusTemperature = $this->weatherRepository->getCelsiusTemperatureByCity($city);
         $genre = $this->calculateGenre($celciusTemperature);
-        return $this->spotifyRepository->searchByGenre($genre);
 
+        $tracks = $this->spotifyRepository->searchByGenre($genre);
+
+        $eventParams = [
+            'location' => $city,
+            'temperature' => $celciusTemperature,
+            'genre' => $genre,
+            'tracks' => json_encode($tracks)
+        ];
+
+        GetPlayListEvent::dispatch($eventParams);
+
+        return $tracks;
     }
 
     /**

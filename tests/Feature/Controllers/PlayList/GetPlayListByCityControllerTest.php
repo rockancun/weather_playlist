@@ -41,6 +41,13 @@ class GetPlayListByCityControllerTest extends TestCase
             "status" => "success",
             "data" => [SpotifyMemoryRepository::POP_TRACK]
         ]);
+
+        $this->assertDatabaseHas('play_list_statistics', [
+            'location' => 'London',
+            'temperature' => self::UPPER_LIMIT_POP_TEMPERATURE,
+            'genre' => 'pop',
+            'tracks' => json_encode([SpotifyMemoryRepository::POP_TRACK])
+        ]);
     }
 
     public function test_get_pop_play_list_weather_exception_error(): void

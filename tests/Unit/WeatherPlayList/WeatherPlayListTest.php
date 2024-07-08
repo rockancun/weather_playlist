@@ -2,7 +2,9 @@
 
 namespace Tests\Unit\WeatherPlayList;
 
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
+use App\Events\GetPlayListEvent;
+use Illuminate\Support\Facades\Event;
 use App\Src\Spotify\SpotifyMemoryRepository;
 use App\Src\Weather\StaticWeatherRepository;
 use App\Src\WeatherPlayList\WeatherPlayList;
@@ -18,6 +20,13 @@ class WeatherPlayListTest extends TestCase
 
     private const LONDON_CITY = 'London';
     private const LONDON_COORDINATES = ["51.5074", "0.1278"];
+
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        Event::fake([GetPlayListEvent::class]);
+    }
 
     public function test_get_party_play_list_by_city(): void
     {
