@@ -20,4 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/v1/playlist/getByCity/{city}', GetPlayListByCityController::class)->name("v1.playlist.getByCity");
+Route::get('/v1/playlist/getByCity/{city}', GetPlayListByCityController::class)
+    ->name("v1.playlist.getByCity");
+
+Route::get('/v1/playlist/getByCoordinates/{latitude}/{longitude}', GetPlayListByCoordinatesController::class)
+    ->name("v1.playlist.getByCoordinates");

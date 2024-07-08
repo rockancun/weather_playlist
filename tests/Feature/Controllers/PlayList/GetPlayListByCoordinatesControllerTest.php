@@ -18,6 +18,8 @@ class GetPlayListByCoordinatesControllerTest extends TestCase
 
     private const UPPER_LIMIT_POP_TEMPERATURE = 30;
     private const ROUTE_NAME = 'v1.playlist.getByCoordinates';
+    private const LONDON_COORDINATE_LATITUDE = "51.5074";
+    private const LONDON_COORDINATE_LONGITUDE = "0.1278";
 
     public function setUp(): void
     {
@@ -32,9 +34,16 @@ class GetPlayListByCoordinatesControllerTest extends TestCase
             new StaticWeatherRepository(self::UPPER_LIMIT_POP_TEMPERATURE)
         );
 
-        $response = $this->get(
-            route(self::ROUTE_NAME, ['city' => 'London'])
+        $url = route(
+            self::ROUTE_NAME,
+            [
+                'latitude' => self::LONDON_COORDINATE_LATITUDE,
+                'longitude' => self::LONDON_COORDINATE_LONGITUDE
+            ]
         );
+
+
+        $response = $this->get($url);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJson([
@@ -43,24 +52,52 @@ class GetPlayListByCoordinatesControllerTest extends TestCase
         ]);
     }
 
+    public function test_get_pop_play_list_invalid_request_fail(): void
+    {
+        $this->app->instance(
+            WeatherRepository::class,
+            new StaticWeatherRepository(self::UPPER_LIMIT_POP_TEMPERATURE)
+        );
+
+        $response = $this->get(
+            route(self::ROUTE_NAME, [
+                'latitude' => "-91.0",
+                'longitude' => self::LONDON_COORDINATE_LONGITUDE
+            ])
+        );
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJson([
+            "status" => "fail",
+            "data" => [
+                "latitude" => ["The latitude field must be between -90 and 90."]
+            ]
+        ]);
+    }
+
+
+
     public function test_get_pop_play_list_weather_exception_error(): void
     {
         $mock = Mockery::mock(WeatherRepository::class);
-        $mock->shouldReceive("getCelsiusTemperatureByCity")->andReturnUsing(function () {
+        $mock->shouldReceive("getCelsiusTemperatureByCoordinates")->andReturnUsing(function () {
             throw new WeatherException();
         });
 
         $this->app->instance(WeatherRepository::class, $mock);
 
         $response = $this->get(
-            route(self::ROUTE_NAME, ['city' => 'London'])
+            route(self::ROUTE_NAME, [
+                'latitude' => self::LONDON_COORDINATE_LATITUDE,
+                'longitude' => self::LONDON_COORDINATE_LONGITUDE
+            ])
         );
 
         $response->assertStatus(Response::HTTP_SERVICE_UNAVAILABLE);
         $response->assertJson(
             [
                 "status" => "error",
-                "message" => "Servicio de Clima no disponible"
+                "message" => "Servicio de clima no disponible"
             ],
         );
     }
@@ -68,14 +105,17 @@ class GetPlayListByCoordinatesControllerTest extends TestCase
     public function test_get_pop_play_list_exception_error(): void
     {
         $mock = Mockery::mock(WeatherRepository::class);
-        $mock->shouldReceive("getCelsiusTemperatureByCity")->andReturnUsing(function () {
+        $mock->shouldReceive("getCelsiusTemperatureByCoordinates")->andReturnUsing(function () {
             throw new \Exception();
         });
 
         $this->app->instance(WeatherRepository::class, $mock);
 
         $response = $this->get(
-            route(self::ROUTE_NAME, ['city' => 'London'])
+            route(self::ROUTE_NAME, [
+                'latitude' => self::LONDON_COORDINATE_LATITUDE,
+                'longitude' => self::LONDON_COORDINATE_LONGITUDE
+            ])
         );
 
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);

@@ -43,8 +43,6 @@ class GetPlayListByCityController extends Controller
                 Response::HTTP_SERVICE_UNAVAILABLE
             );
         } catch(\Exception $exception) {
-
-            print_r($exception::class);
             Log::error($exception->getMessage());
             return response()->json(
                 [
