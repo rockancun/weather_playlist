@@ -1,0 +1,149 @@
+openapi: 3.0.3
+info:
+  title: API para obtener una lista de canciones de spotify.
+  description: |-
+    Esta API permite obtener una lista de caciones de spotify en funcion de la temperatura de una localización geografica ya sea por ciudad o por coordenadas geográficas en tiempo real.
+  
+  contact:
+    email: gaton.hikuri@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+
+servers:
+  - url: https://localhost/api/v1
+  
+tags:
+  - name: playlist
+    description: Listas de canciones de spotify
+
+paths:
+  /playlist/getByCity/{city}:
+    get:
+      tags:
+        - playlist
+      summary: Obtiene una lista de canciones de spotify por ciudad
+      description: Regresa una lista de canciones de spotify por ciudad
+      operationId: getByCity
+      parameters:
+        - name: city
+          in: path
+          description: Nombre de una ciudad
+          required: true
+          schema:
+            type: string
+            example: London
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'          
+        '422':
+          description: Operación fallida devuelve lista de mensajes de error de validación de los parámetros enviados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiFailResponse'    
+        '500':
+          description: Operación fallida devuelve mensaje de error "Servicio no disponible contacte al administrador"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse' 
+        '503':
+          description: Operación fallida devuelve mensaje de error "Servicio de clima no disponible"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /playlist/getByCoordinates/{latitude}/{longitude}:
+    get:
+      tags:
+        - playlist
+      summary: Obtiene una lista de canciones de spotify por coordenadas geográficas
+      description: Regresa una lista de canciones de spotify por coordenadas geográficas de latitud y longitud
+      operationId: getByCoordinates
+      parameters:
+        - name: latitude
+          in: path
+          description: latitud geográfica
+          required: true
+          schema:
+            type: string
+            example: 51.5074
+        - name: longitude
+          in: path
+          description: Longitud geográfica
+          required: true
+          schema:
+            type: string
+            example: 0.1278
+      responses:
+        '200':
+          description: Operacion exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '500':
+          description: Operación fallida devuelve mensaje de error "Servicio no disponible contacte al administrador"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse' 
+        '503':
+          description: Operación fallida devuelve mensaje de error "Servicio de clima no disponible"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        data:
+          type: array
+          items:
+            type: string
+            
+    ApiFailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        data:
+          $ref: '#/components/schemas/Errors'
+  
+    Errors:
+      type: object
+      properties:
+        param: 
+          items:
+            type: string
+            
+    ApiErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        data:
+          type: string
+      xml:
+        name: '##default'
+
+
+
+
+
+
+
+
+
