@@ -36,6 +36,7 @@ La solución utiliza dependencias para obtener el clima y la lista de de cancion
 de spotify para agilizar la implementación. Las cuales son:
 
 aerni/laravel-spotify
+
 rakibdevs/openweather-laravel-api
 
 
