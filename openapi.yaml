@@ -40,7 +40,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'          
+                $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: Recurso no encontrado devuelve mensaje de error "No se encuentra una ciudad con ese nombre"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse' 
         '422':
           description: Operación fallida devuelve lista de mensajes de error de validación de los parámetros enviados
           content:

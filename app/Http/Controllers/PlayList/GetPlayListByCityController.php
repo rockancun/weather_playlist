@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Src\Weather\WeatherException;
 use App\Src\Spotify\SpotifyRepository;
+use App\Src\Weather\WeatherCityNotFoundException;
 use App\Src\Weather\WeatherRepository;
 use App\Src\WeatherPlayList\WeatherPlayList;
 
@@ -33,6 +34,14 @@ class GetPlayListByCityController extends Controller
                     "status" => "success",
                     "data" => $playList
                 ]
+            );
+        } catch(WeatherCityNotFoundException $exception) {
+            return response()->json(
+                [
+                    "status" => "error",
+                    "message" => "No se encuentra una ciudad con ese nombre"
+                ],
+                Response::HTTP_NOT_FOUND
             );
         } catch(WeatherException $exception) {
             return response()->json(

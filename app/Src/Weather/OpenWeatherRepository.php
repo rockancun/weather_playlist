@@ -6,8 +6,10 @@ namespace App\Src\Weather;
 
 use RakibDevs\Weather\Weather;
 use Illuminate\Support\Facades\Log;
+use App\Src\Weather\WeatherException;
 use App\Src\Weather\WeatherRepository;
-use RakibDevs\Weather\Exceptions\WeatherException;
+use App\Src\Weather\WeatherCityNotFoundException;
+use RakibDevs\Weather\Exceptions\WeatherException as WeatherExceptionRakibDevs;
 
 final class OpenWeatherRepository implements WeatherRepository
 {
@@ -17,6 +19,9 @@ final class OpenWeatherRepository implements WeatherRepository
             $openWeather = new Weather();
             $result = $openWeather->getCurrentByCity($city);
             return (float)$result->main->temp;
+        } catch (WeatherExceptionRakibDevs $exception) {
+            Log::error($exception->getMessage());
+            throw new WeatherCityNotFoundException();
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             throw new WeatherException();
