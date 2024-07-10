@@ -22,6 +22,50 @@ class GetPlayListByCoordinatesController extends Controller
     ) {
     }
 
+    /**
+     * @OA\Get(
+     *     path="/playlist/getByCoordinates/{latitude}/{longitude}",
+     *     description="Regresa una lista de canciones de spotify por coordenadas geográficas de latitud y longitud",
+     *     operationId="getByCoordinates",
+     *     tags={"playlist"},
+     *     @OA\Parameter(
+     *         name="latitude",
+     *         in="path",
+     *         description="latitud geográfica",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="51.5074"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="longitude",
+     *         in="path",
+     *         description="Longitud geográfica",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="0.1278"
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="Operación exitosa devuelve la lista de canciones",
+     *         @OA\JsonContent(ref="#/components/schemas/ApiTracksResponse"),
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Operación fallida devuelve mensaje de error 'Servicio no disponible contacte al administrador'",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),
+     *     @OA\Response(
+     *         response="503",
+     *         description="Operación fallida devuelve mensaje de error 'Servicio de clima no disponible'",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     )
+     * )
+     */
     public function __invoke(Request $request): JsonResponse
     {
         try {

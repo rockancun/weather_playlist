@@ -23,6 +23,50 @@ class GetPlayListByCityController extends Controller
     ) {
     }
 
+    /**
+     * @OA\Get(
+     *     path="/playlist/getByCity/{city}",
+     *     description="Regresa una lista de canciones de spotify por ciudad",
+     *     operationId="getByCity",
+     *     tags={"playlist"},
+     *     @OA\Parameter(
+     *         name="city",
+     *         in="path",
+     *         description="Regresa una lista de canciones de spotify por ciudad",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="London"
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="Operación exitosa devuelve la lista de canciones",
+     *         @OA\JsonContent(ref="#/components/schemas/ApiTracksResponse"),
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Recurso no encontrado devuelve mensaje de error 'No se encuentra una ciudad con ese nombre'",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),
+     *     @OA\Response(
+     *         response="422",
+     *         description="Operación fallida devuelve lista de mensajes de error de validación de los parámetros enviados",
+     *         @OA\JsonContent(ref="#/components/schemas/ApiFailResponse"),
+     *     ),
+     *     @OA\Response(
+     *         response="500",
+     *         description="Operación fallida devuelve mensaje de error 'Servicio no disponible contacte al administrador'",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),
+     *     @OA\Response(
+     *         response="503",
+     *         description="Operación fallida devuelve mensaje de error 'Servicio de clima no disponible'",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     )
+     * )
+     */
     public function __invoke(Request $request): JsonResponse
     {
         try {

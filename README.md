@@ -27,6 +27,11 @@ La solución utiliza dependencias para obtener el clima y la lista de de cancion
 aerni/laravel-spotify
 rakibdevs/openweather-laravel-api
 
+## Documentación
+
+La documentación se encuentra en la ruta
+    http://localhost/api/documentation
+    
 ## Iniciar
 
 Antes de instalar el proyecto es necesario que tengas instalado:

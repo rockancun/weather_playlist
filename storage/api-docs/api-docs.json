@@ -1,0 +1,236 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API para obtener una lista de canciones de spotify.",
+        "description": "Esta API permite obtener una lista de canciones de spotify en funcion de la temperatura de una localización geográfica ya sea por ciudad o por coordenadas geográficas en tiempo real.",
+        "contact": {
+            "name": "Gaston Hidalgo Marquez",
+            "email": "gaston.hikuri@gmail.com"
+        },
+        "license": {
+            "name": "MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost",
+            "description": "API server"
+        }
+    ],
+    "paths": {
+        "/playlist/getByCity/{city}": {
+            "get": {
+                "tags": [
+                    "playlist"
+                ],
+                "description": "Regresa una lista de canciones de spotify por ciudad",
+                "operationId": "getByCity",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "description": "Regresa una lista de canciones de spotify por ciudad",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "London"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa devuelve la lista de canciones",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiTracksResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Recurso no encontrado devuelve mensaje de error 'No se encuentra una ciudad con ese nombre'",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Operación fallida devuelve lista de mensajes de error de validación de los parámetros enviados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiFailResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Operación fallida devuelve mensaje de error 'Servicio no disponible contacte al administrador'",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Operación fallida devuelve mensaje de error 'Servicio de clima no disponible'",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/playlist/getByCoordinates/{latitude}/{longitude}": {
+            "get": {
+                "tags": [
+                    "playlist"
+                ],
+                "description": "Regresa una lista de canciones de spotify por coordenadas geográficas de latitud y longitud",
+                "operationId": "getByCoordinates",
+                "parameters": [
+                    {
+                        "name": "latitude",
+                        "in": "path",
+                        "description": "latitud geográfica",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "51.5074"
+                        }
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "path",
+                        "description": "Longitud geográfica",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "0.1278"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa devuelve la lista de canciones",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiTracksResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Operación fallida devuelve mensaje de error 'Servicio no disponible contacte al administrador'",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Operación fallida devuelve mensaje de error 'Servicio de clima no disponible'",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorModel"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ErrorModel": {
+                "required": [
+                    "code",
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "error"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ApiTracksResponse": {
+                "required": [
+                    "code",
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "play that funky music"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ApiFailResponse": {
+                "required": [
+                    "code",
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "error"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Errors"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Errors": {
+                "properties": {
+                    "param": {
+                        "type": "string",
+                        "example": "latitud no valida"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "playlist",
+            "description": "Listas de canciones de spotify"
+        }
+    ]
+}
